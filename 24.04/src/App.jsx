@@ -25,6 +25,7 @@ export default function App() {
       setError(`please fill ${errorStr}`);
       return;
     }
+    setError('');
     addPersons([...persons,{name:name.value,age:age.value,id:persons.length}]);
   }
 
