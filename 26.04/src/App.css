@@ -1,0 +1,98 @@
+body {
+  font-family: 'Cascadia Code';
+  background-color: rgb(4, 4, 47);
+}
+
+li {
+  list-style: none;
+  color:white;
+  border:2px solid white;
+  border-radius: 10px 5px;
+  padding: 0px 10px;
+}
+
+.lists {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin:auto;
+}
+
+.todoRegistry {
+  position: fixed;
+  right: 15px;
+  display: flex;
+  align-items: flex-start;
+}
+
+input {
+  padding: 15px 20px;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.2);
+  border:none;
+  color: #38bdf8;
+  font-family: 'Cascadia Code', monospace;
+  outline: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.todoRegistry button {
+  padding: 15px 15px;
+  margin-top:5px;
+  transform: translateY(-4px);
+}
+
+input:focus {
+  background-color: rgba(0, 0, 0, 0.6);
+  border-color: #38bdf8;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3), inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+input:focus::placeholder {
+  color:white;
+}
+
+button {
+  margin:8px 10px;
+  padding:12px;
+  font-family: 'Cascadia Code';
+  border-radius:24px;
+  border:none;
+  transition:0.3s;
+}
+
+button:hover {
+  color:white;
+  background-color: rgb(54, 39, 141);
+  box-shadow: 0 2px 23px blue;
+  transform:translateY(-3px);
+  cursor: pointer;
+}
+
+button:active {
+  transform:scale(0.9)
+}
+
+.buttonCollections {
+  position: fixed;
+  left:15px;
+}
+
+@media screen and (max-width:1300px) {
+    .buttonCollections {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .todoRegistry input {
+      width: 150px;
+    }
+
+    .lists {
+      width: 50%;
+      margin-left:100px;
+    }
+}
