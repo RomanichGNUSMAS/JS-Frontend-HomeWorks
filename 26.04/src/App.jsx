@@ -91,7 +91,6 @@ export default function App() {
         handleComplete={handleComplete}
         handleDelete={handleDelete}
       />
-
     </>
   )
 }

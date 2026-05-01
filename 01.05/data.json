@@ -1,0 +1,25 @@
+{
+  "ToDos": [
+    {
+      "id": "101",
+      "title": "go to gym",
+      "completed": true
+    },
+    {
+      "id": "102",
+      "title": "find a girlfriend",
+      "completed": true
+    },
+    {
+      "id": "103",
+      "title": "go meet my girlfriend",
+      "completed": true
+    },
+    {
+      "title": "go do Node.js",
+      "completed": false,
+      "id": "YiU9n48e-4A"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

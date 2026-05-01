@@ -1,0 +1,318 @@
+:root {
+  --bg0: #0b1020;
+  --bg1: #0e1630;
+  --card: rgba(255, 255, 255, 0.06);
+  --card2: rgba(255, 255, 255, 0.08);
+  --stroke: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.65);
+  --muted2: rgba(255, 255, 255, 0.45);
+  --accent: #7c3aed;
+  --accent2: #22c55e;
+  --danger: #ef4444;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  --radius: 18px;
+  --radius2: 14px;
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Cascadia Code", "Liberation Mono", "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font);
+  background:
+    radial-gradient(900px 450px at 20% -10%, rgba(124, 58, 237, 0.35), transparent 55%),
+    radial-gradient(800px 450px at 90% 10%, rgba(34, 197, 94, 0.18), transparent 60%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+}
+
+/* Layout */
+.container {
+  width: min(1100px, calc(100% - 32px));
+  margin: 28px auto;
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 0.9fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.container > div {
+  background: linear-gradient(180deg, var(--card2), var(--card));
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 16px 14px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.container > div::before {
+  content: "";
+  display: block;
+  height: 2px;
+  margin: -16px -16px 14px;
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.8), rgba(34, 197, 94, 0.55));
+  opacity: 0.9;
+}
+
+.Lists::after,
+.filter::after,
+.addList::after {
+  content: "";
+  display: block;
+  margin-top: 6px;
+  color: var(--muted2);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--mono);
+}
+
+.Lists::after {
+  content: "All todos";
+}
+.filter::after {
+  content: "Filtered todos";
+}
+.addList::after {
+  content: "Create a new todo";
+}
+
+/* Controls (inputs/select/buttons) */
+.addList > div,
+.filter {
+  text-align: left;
+}
+
+input,
+select,
+button {
+  font-family: inherit;
+}
+
+.addList input,
+.filter select {
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.addList input {
+  font-family: var(--mono);
+  letter-spacing: 0.01em;
+}
+
+.addList input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.addList input:focus,
+.filter select:focus {
+  border-color: rgba(124, 58, 237, 0.75);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.18);
+}
+
+.addList > div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.addList button {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.95), rgba(124, 58, 237, 0.7));
+  color: white;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(124, 58, 237, 0.18);
+  transition: transform 140ms ease, filter 140ms ease, box-shadow 140ms ease;
+}
+
+.addList button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow: 0 18px 36px rgba(124, 58, 237, 0.24);
+}
+
+.addList button:active {
+  transform: translateY(0px);
+}
+
+.filter select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgba(255, 255, 255, 0.65) 50%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.65) 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% - 2px),
+    calc(100% - 13px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 36px;
+}
+
+/* Todo list + items (List -> div, ToDoItem -> div) */
+.Lists > div,
+.filter > div {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.Lists > div > div,
+.filter > div > div {
+  text-align: left;
+  padding: 12px 12px 10px;
+  border-radius: var(--radius2);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.22);
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.Lists > div > div:hover,
+.filter > div > div:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.Lists h3,
+.filter h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+
+.Lists p,
+.filter p {
+  margin: 0 0 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.Lists p::before,
+.filter p::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+/* Buttons inside each todo item: Complete/Cancel and Delete */
+.Lists > div > div button,
+.filter > div > div button {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  padding: 9px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.Lists > div > div button:hover,
+.filter > div > div button:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.Lists > div > div button:active,
+.filter > div > div button:active {
+  transform: translateY(0px);
+}
+
+.Lists > div > div button + button,
+.filter > div > div button + button {
+  margin-left: 8px;
+}
+
+/* Make first button feel "primary" (Complete/Cancel) */
+.Lists > div > div button:first-of-type,
+.filter > div > div button:first-of-type {
+  background: linear-gradient(180deg, rgba(34, 197, 94, 0.9), rgba(34, 197, 94, 0.55));
+  border-color: rgba(34, 197, 94, 0.35);
+  box-shadow: 0 14px 28px rgba(34, 197, 94, 0.12);
+}
+
+/* Make last button feel "danger" (Delete) */
+.Lists > div > div button:last-of-type,
+.filter > div > div button:last-of-type {
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.9), rgba(239, 68, 68, 0.55));
+  border-color: rgba(239, 68, 68, 0.35);
+  box-shadow: 0 14px 28px rgba(239, 68, 68, 0.1);
+}
+
+/* Empty states */
+.Lists > div:has(> div) ~ * {
+  /* keep selector valid; no-op */
+}
+
+.Lists > div,
+.filter > div {
+  color: var(--text);
+}
+
+.Lists > div > div:only-child:has(> :is(h3, p):not(*)) {
+  /* no-op; safe fallback */
+}
+
+.Lists > div:empty,
+.filter > div:empty {
+  display: none;
+}
+
+.Lists > div > div,
+.filter > div > div {
+  animation: pop 220ms ease both;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+/* Responsive */
+@media (max-width: 920px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  .addList > div {
+    grid-template-columns: 1fr;
+  }
+}
