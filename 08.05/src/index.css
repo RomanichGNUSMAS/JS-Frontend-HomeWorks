@@ -1,0 +1,6 @@
+body {
+  margin: 0;
+  background: linear-gradient(to right, #934ccd, #5033b7);
+  font-family: "Cascadia Code", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+}

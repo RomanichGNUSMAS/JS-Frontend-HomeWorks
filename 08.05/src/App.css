@@ -1,0 +1,111 @@
+/* modest styles for homework */
+
+.todoLayout {
+  display: grid;
+  gap: 12px;
+  max-width: 520px;
+  margin: 16px auto;
+  padding: 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+}
+
+.todoFilter {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d6d6d6;
+  background: #fff;
+}
+
+.todoForm {
+  max-width: 520px;
+  margin: 0 auto 16px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+}
+
+.todoForm__input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d6d6d6;
+}
+
+.todoForm__btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #d6d6d6;
+  background: #f5f5f5;
+  cursor: pointer;
+}
+
+.todoList {
+  display: grid;
+  gap: 10px;
+}
+
+.todoItem {
+  padding: 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+}
+
+.todoItem--done {
+  opacity: 0.75;
+}
+
+.todoItem__title {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.todoItem__status {
+  margin: 0 0 10px;
+  color: #00ff26;
+  font-size: 13px;
+}
+.todoFilter {
+  background: transparent;
+  color:red;
+  font-family: 'Cascadia Code';
+}
+
+option {
+ border-radius: 24px;
+}
+.todoItem__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button {
+  font-family: 'Cascadia Code';
+  transition :0.3s;
+}
+button:hover {
+  color:white;
+  background-color: black;
+}
+
+.todoItem__btn {
+  padding: 6px 10px;
+  border-radius: 12px 8px;
+  border: 1px solid #d6d6d6;
+  background: #fff;
+  cursor: pointer;
+}
+
+.todoItem__btn--danger {
+  background: #fff0f0;
+  border-color: #ffbcbc;
+}
+
+@media (max-width: 520px) {
+  .todoForm {
+    grid-template-columns: 1fr;
+  }
+}
