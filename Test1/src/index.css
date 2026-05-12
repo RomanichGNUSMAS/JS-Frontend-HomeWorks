@@ -1,0 +1,328 @@
+/* Глобальная тема и сброс — разметка компонентов не трогаем, только селекторы по дереву */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #0f1419;
+  --bg-elevated: #1a2332;
+  --surface: #243044;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #e8eef7;
+  --muted: #8b9cb3;
+  --accent: #5b9fd4;
+  --accent-hover: #7ab8e8;
+  --danger: #e06c75;
+  --danger-hover: #f0858d;
+  --success: #98c379;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  background-color: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Корневой контейнер App: один вложенный div */
+#root > div {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  min-height: 100vh;
+  background: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(91, 159, 212, 0.15), transparent 50%),
+    var(--bg);
+}
+
+/* Первый блок — форма AddUser */
+#root > div > div:first-of-type {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+#root > div > div:first-of-type form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1rem;
+}
+
+#root > div > div:first-of-type form > p {
+  flex-basis: 100%;
+  margin: 0 0 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #f5a742;
+  background: rgba(245, 167, 66, 0.12);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid #f5a742;
+}
+
+#root > div > div:first-of-type input[type="text"],
+#root > div > div:first-of-type input[type="number"] {
+  flex: 1 1 140px;
+  min-width: 0;
+  padding: 0.65rem 0.85rem;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+#root > div > div:first-of-type input::placeholder {
+  color: var(--muted);
+}
+
+#root > div > div:first-of-type input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(91, 159, 212, 0.25);
+}
+
+#root > div > div:first-of-type form > button {
+  flex: 0 0 auto;
+  padding: 0.65rem 1.35rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--bg);
+  background: linear-gradient(160deg, var(--accent), #4a8fc4);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 0.12s, filter 0.15s;
+}
+
+#root > div > div:first-of-type form > button:hover {
+  filter: brightness(1.08);
+}
+
+#root > div > div:first-of-type form > button:active {
+  transform: scale(0.98);
+}
+
+/* Второй блок — UserList: переключатель вида + контент */
+#root > div > div:nth-child(2) {
+  padding: 1.25rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+#root > div > div:nth-child(2) > button {
+  margin-right: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+#root > div > div:nth-child(2) > button:hover {
+  background: rgba(91, 159, 212, 0.2);
+  border-color: rgba(91, 159, 212, 0.45);
+}
+
+/* Текст «not set» — узел текста рядом с кнопками оборачивается визуально через общий контейнер уже задан */
+#root > div > div:nth-child(2) {
+  color: var(--muted);
+}
+
+/* Таблица */
+#root table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+#root thead {
+  background: var(--surface);
+}
+
+#root th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  border-bottom: 2px solid var(--border);
+}
+
+#root td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+#root tbody tr {
+  transition: background 0.12s;
+}
+
+#root tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+#root tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#root td button {
+  margin-right: 0.35rem;
+  margin-top: 0.15rem;
+  margin-bottom: 0.15rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+#root td button:first-of-type {
+  color: #fff;
+  background: rgba(224, 108, 117, 0.25);
+  border-color: rgba(224, 108, 117, 0.45);
+}
+
+#root td button:first-of-type:hover {
+  background: var(--danger);
+}
+
+#root td button:nth-of-type(2) {
+  color: var(--bg);
+  background: rgba(152, 195, 121, 0.85);
+  border-color: transparent;
+}
+
+#root td button:nth-of-type(2):hover {
+  background: var(--success);
+}
+
+#root td button:nth-of-type(3) {
+  color: var(--text);
+  background: rgba(91, 159, 212, 0.35);
+  border-color: rgba(91, 159, 212, 0.5);
+}
+
+#root td button:nth-of-type(3):hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* Сетка карточек (Grid) — обёртка с карточками */
+#root > div > div:nth-child(2) > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+#root > div > div:nth-child(2) > div > div {
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+#root > div > div:nth-child(2) > div > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+#root > div > div:nth-child(2) > div > div img {
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border);
+}
+
+#root > div > div:nth-child(2) > div > div h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+#root > div > div:nth-child(2) > div > div p {
+  margin: 0.35rem 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+#root > div > div:nth-child(2) > div > div p:last-of-type {
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent-hover);
+}
+
+#root > div > div:nth-child(2) > div > div button {
+  display: inline-block;
+  margin: 0.25rem 0.2rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: filter 0.12s, transform 0.12s;
+}
+
+#root > div > div:nth-child(2) > div > div button:nth-of-type(1) {
+  color: var(--bg);
+  background: var(--success);
+  border-color: transparent;
+}
+
+#root > div > div:nth-child(2) > div > div button:nth-of-type(2) {
+  color: var(--text);
+  background: rgba(91, 159, 212, 0.4);
+  border-color: rgba(91, 159, 212, 0.55);
+}
+
+#root > div > div:nth-child(2) > div > div button:nth-of-type(3) {
+  color: #fff;
+  background: rgba(224, 108, 117, 0.45);
+  border-color: rgba(224, 108, 117, 0.6);
+}
+
+#root > div > div:nth-child(2) > div > div button:hover {
+  filter: brightness(1.1);
+}
+
+#root > div > div:nth-child(2) > div > div button:active {
+  transform: scale(0.97);
+}
