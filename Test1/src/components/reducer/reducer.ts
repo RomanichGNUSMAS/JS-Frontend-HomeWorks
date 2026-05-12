@@ -6,7 +6,7 @@ export default function reducer(state: User[], action: Action) {
         case "ADDUSER" : {
             const newUser = action.payload as User;
             const found = state.find(user => user.name === newUser.name);
-            return found ? state : [...state, newUser];
+            return found ? state : [...state, {...newUser,id:Date.now()}];
         }
         case "DELETEUSER" : {
             const id = action.payload as number;
