@@ -5,18 +5,18 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 type Inputs = {
     name: string
     age: number,
-    salary:number
-  }
+    salary: number
+}
 
-export const AddUser:React.FC = function () {
+export const AddUser: React.FC = function () {
     const { onAdd } = React.useContext(DataContext);
     const {
         register,
         handleSubmit,
         formState: { errors },
-      } = useForm<Inputs>()
+    } = useForm<Inputs>()
 
-    const onSubmit:SubmitHandler<Inputs> = (data:User) => {
+    const onSubmit: SubmitHandler<Inputs> = (data: User) => {
         onAdd(data);
     }
     return (
@@ -29,12 +29,12 @@ export const AddUser:React.FC = function () {
                         errors.salary?.message && <p key={2}>{errors.salary.message}</p>
                     ]
                 }
-                <input 
+                <input
                     type="text"
                     placeholder="name"
-                    {...register('name',{required:'valid name required'})}
+                    {...register('name', { required: 'valid name required' })}
                 />
-                <input 
+                <input
                     type="number"
                     placeholder="age"
                     {...register('age', {
@@ -48,7 +48,7 @@ export const AddUser:React.FC = function () {
                         },
                     })}
                 />
-                <input 
+                <input
                     type="number"
                     placeholder="salary"
                     {...register('salary', {

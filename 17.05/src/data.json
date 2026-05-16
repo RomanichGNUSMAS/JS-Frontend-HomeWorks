@@ -1,0 +1,104 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "price": 10.99,
+      "rating": 5,
+      "comments": [],
+      "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+      "id": "2",
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "price": 12.99,
+      "rating": 0,
+      "comments": [],
+      "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+      "id": "3",
+      "title": "1984",
+      "author": "George Orwell",
+      "price": 15,
+      "rating": 5,
+      "comments": [],
+      "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+      "id": "4",
+      "title": "Pride and Prejudice",
+      "author": "Jane Austen",
+      "price": 9.99,
+      "rating": 3,
+      "comments": [],
+      "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+      "id": "5",
+      "title": "The Catcher in the Rye",
+      "author": "J.D. Salinger",
+      "price": 11.99,
+      "rating": 4,
+      "comments": [],
+      "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+      "id": "6",
+      "title": "Moby Dick",
+      "author": "Herman Melville",
+      "price": 13.99,
+      "rating": 5,
+      "comments": [],
+      "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+      "id": "7",
+      "title": "War and Peace",
+      "author": "Leo Tolstoy",
+      "price": 19.99,
+      "rating": 5,
+      "comments": [],
+      "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+      "id": "8",
+      "title": "The Hobbit",
+      "author": "J.R.R. Tolkien",
+      "price": 15.99,
+      "rating": 5,
+      "comments": [],
+      "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+      "id": "9",
+      "title": "Crime and Punishment",
+      "author": "Fyodor Dostoevsky",
+      "price": 17.99,
+      "rating": 4,
+      "comments": [],
+      "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+      "id": "10",
+      "title": "The Alchemist",
+      "author": "Paulo Coelho",
+      "price": 9.49,
+      "rating": 4,
+      "comments": [],
+      "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+      "title": "JS",
+      "author": "Flanaganchik",
+      "price": 50,
+      "rating": 5,
+      "comments": [],
+      "photo": "https://m.media-amazon.com/images/I/91hUer84PpL._AC_UF350,350_QL50_.jpg",
+      "id": "rmnk_E2QLnU"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
