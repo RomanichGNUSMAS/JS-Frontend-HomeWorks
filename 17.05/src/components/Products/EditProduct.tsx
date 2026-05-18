@@ -22,7 +22,7 @@ export const EditProduct: React.FC = () => {
 
 
     const handleChange: SubmitHandler<Partial<Product>> = (data) => {
-        const obj: Partial<Product> = {};
+        const obj:Partial<Product> = {};
 
         for (const key in data) {
             const productKey = key as keyof Product;
@@ -30,7 +30,7 @@ export const EditProduct: React.FC = () => {
             const value = data[productKey];
 
             if (value !== undefined && value !== null && value !== '') {
-                obj[productKey] = value as any;
+                (obj as unknown)[productKey] = value;
             }
         }
 

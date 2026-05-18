@@ -2,6 +2,7 @@ import React from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import type { UserINFO } from "../types/types";
+import { Axios } from "../Feautures/api";
 
 export const Signup: React.FC = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<UserINFO>();
@@ -13,8 +14,11 @@ export const Signup: React.FC = () => {
     const navigate = useNavigate();
 
     const handleRegistr: SubmitHandler<UserINFO> = (data) => {
-        //Axios.post('/api/backend/regist')
-        navigate('/login')
+        Axios.post('/api/regist',data)
+            .then(() => navigate('/login'))
+            .catch(e => {
+                console.log(e.message)
+            })
     }
 
     return (

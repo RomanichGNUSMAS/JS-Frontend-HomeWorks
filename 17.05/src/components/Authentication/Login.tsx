@@ -2,6 +2,7 @@ import React from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import type { UserINFO } from "../types/types";
+import { Axios } from "../Feautures/api";
 
 type FormData = Omit<UserINFO, 'name'>
 
@@ -14,7 +15,14 @@ export const Login: React.FC = () => {
     })
 
     const handleLogIn: SubmitHandler<FormData> = (data) => {
-        //Axios.pos('backend/api/login')
+        Axios.post('/api/login',data)
+            .then(response => {
+                sessionStorage.setItem('token',response.data.token)
+                navigate('/')
+            })
+            .catch(e => {
+                console.log(e.message)
+            })
     }
 
     return (

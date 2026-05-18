@@ -4,7 +4,7 @@
       "id": "1",
       "title": "The Great Gatsby",
       "author": "F. Scott Fitzgerald",
-      "price": 10.99,
+      "price": 12,
       "rating": 5,
       "comments": [],
       "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
@@ -91,14 +91,13 @@
       "photo": "https://img.magnific.com/free-vector/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg?semt=ais_hybrid&w=740&q=80"
     },
     {
+      "id": 1779006525944,
       "title": "JS",
       "author": "Flanaganchik",
-      "price": 50,
-      "rating": 5,
-      "comments": [],
-      "photo": "https://m.media-amazon.com/images/I/91hUer84PpL._AC_UF350,350_QL50_.jpg",
-      "id": "rmnk_E2QLnU"
+      "price": 1230,
+      "photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREKCGT-UqKs7f5brMtc9HeZR-IjGYJ4ewALA&s",
+      "rating": 0,
+      "comments": []
     }
-  ],
-  "$schema": "./node_modules/json-server/schema.json"
+  ]
 }

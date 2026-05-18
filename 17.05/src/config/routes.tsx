@@ -8,6 +8,7 @@ import { NotFound } from "../components/Feautures/404";
 import { Login } from "../components/Authentication/Login";
 import { Signup } from "../components/Authentication/Signup";
 import { EditProduct } from "../components/Products/EditProduct";
+import { LogOut } from "../components/Authentication/LogOut";
 
 
 export const routes = createBrowserRouter([
@@ -22,6 +23,7 @@ export const routes = createBrowserRouter([
             { path: 'About', element: <About /> },
             { path: 'login', element: <Login /> },
             { path: 'signup', element: <Signup /> },
+            { path: 'logout', element: <LogOut /> }
         ]
     },
     { path: '*', element: <NotFound /> }
