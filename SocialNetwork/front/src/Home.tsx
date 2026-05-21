@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Axios } from "./config/Axios";
 import type { Account, User } from "./config/types/types";
+import type { AxiosDefaults } from "axios";
 
 const navItems = [
     {
@@ -40,6 +41,7 @@ const suggestedUsers = [
 ];
 
 export const Home: React.FC = () => {
+    
     const navigate = useNavigate();
     const [user, setUser] = React.useState<Account | null>(null);
 
@@ -48,10 +50,11 @@ export const Home: React.FC = () => {
         if (!token) {
             navigate("/signup");
         } else {
-            Axios.get<Account>("/auth/user")
+            Axios.get<{ user: Account}>("/auth/user", {
+                headers: { Authorization:`Bearer ${localStorage.getItem('token')}`}
+            })
                 .then((res) => {
-                    console.log(res)
-                    setUser(res.data);
+                    setUser(res.data.user);
                 })
                 .catch(() => {
                     navigate("/signup");
@@ -59,11 +62,7 @@ export const Home: React.FC = () => {
         }
     }, []);
 
-    const displayName = user ? `${user.firstName} ${user.lastName}`.trim() || user.username : "Loading…";
-    const handle = user ? `@${user.username}` : "@username";
-    const avatarSrc = user?.avatar || "https://i.pravatar.cc/150?img=68";
-
-    return (
+    return user && (
         <div className="min-h-screen bg-slate-950 text-slate-100">
             {/* ambient background */}
             <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
@@ -115,13 +114,13 @@ export const Home: React.FC = () => {
                         <div className="mt-auto rounded-xl border border-white/10 bg-slate-900/60 p-3">
                             <div className="flex items-center gap-3">
                                 <img
-                                    src={avatarSrc}
+                                    src={user.avatar}
                                     alt=""
                                     className="h-11 w-11 rounded-full object-cover ring-2 ring-violet-500/50"
                                 />
                                 <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm font-semibold">{displayName}</p>
-                                    <p className="truncate text-xs text-slate-400">{handle}</p>
+                                    <p className="truncate text-sm font-semibold">{`${user.firstName} ${user.lastName}`}</p>
+                                    <p className="truncate text-xs text-slate-400">@{user.username}</p>
                                 </div>
                             </div>
                             <button
@@ -184,7 +183,7 @@ export const Home: React.FC = () => {
                                     New Post
                                 </button>
                                 <img
-                                    src={avatarSrc}
+                                    src={user.avatar || "https://i.pravatar.cc/150?img=68"}
                                     alt=""
                                     className="h-9 w-9 rounded-full object-cover ring-2 ring-violet-500/40 lg:hidden"
                                 />

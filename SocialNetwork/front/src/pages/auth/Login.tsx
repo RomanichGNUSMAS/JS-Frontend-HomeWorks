@@ -12,7 +12,6 @@ export const Login: React.FC = () => {
     const [error, setError] = React.useState<string>("");
 
     const handleLogIn: SubmitHandler<User> = (data) => {
-        console.log(data)
         Axios.post("/auth/signin", data)
             .then((response) => {
                 localStorage.setItem("token", response.data.token);
