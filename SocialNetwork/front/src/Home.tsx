@@ -1,6 +1,5 @@
 import React from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Axios } from "./config/Axios";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import type { Account } from "./config/types/types";
 import { useAuth } from "./hooks/useAuth";
 
