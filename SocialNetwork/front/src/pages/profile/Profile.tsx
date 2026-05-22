@@ -2,12 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import type { Account } from "../../config/types/types";
 import { useAuth } from "../../hooks/useAuth";
+import { Axios } from "../../config/Axios";
 
 const defaultAvatar =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC";
 
 export const Profile: React.FC = () => {
     const [user, setUser] = React.useState<Account | null>(null);
+    const ref = React.useRef<HTMLInputElement | null>(null);
     useAuth(setUser);
 
     if (!user) return null;
@@ -19,6 +21,21 @@ export const Profile: React.FC = () => {
         user.bio?.trim() ||
         "No bio yet — tell the world a little about yourself.";
 
+    const handleInput = () => {
+        let timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
+            if (ref.current)
+                Axios.patch('/account/bio', { bio: ref.current.textContent })
+                    .catch(err => console.log(err.message))
+        }, 3000);
+        return function () {
+            clearTimeout(timeout)
+            timeout = setTimeout(() => {
+                if (ref.current)
+                    Axios.patch('/account/bio', { bio: ref.current.textContent })
+                        .catch(err => console.log(err.message))
+            },1000)
+        }
+    }
     return (
         <div className="space-y-6">
             {/* cover + header */}
@@ -100,7 +117,17 @@ export const Profile: React.FC = () => {
                             </svg>
                             About
                         </h2>
-                        <p className="mt-4 text-sm leading-relaxed text-slate-300">{bio}</p>
+                        <p
+                            ref={ref}
+                            suppressContentEditableWarning={true}
+                            contentEditable
+                            onInput={handleInput()}
+                            role="textbox"
+                            aria-label="Edit bio"
+                            className="mt-4 text-sm leading-relaxed text-slate-300 min-h-[7rem] p-3 rounded-lg bg-white/3 border border-white/6 focus:outline-none focus:ring-0 focus:border-white/10"
+                        >
+                            {bio}
+                        </p>
                     </div>
                 </section>
 
@@ -152,8 +179,8 @@ export const Profile: React.FC = () => {
                                 Recent followers
                             </h3>
                             <ul className="mt-4 space-y-3">
-                                {user.followers.slice(0, 4).map((person:any) => (
-                                    
+                                {user.followers.slice(0, 4).map((person: any) => (
+
                                     <li key={person.id} className="flex items-center gap-3">
                                         <img
                                             src={person.sender.avatar || defaultAvatar}
@@ -179,7 +206,7 @@ export const Profile: React.FC = () => {
                                 Following
                             </h3>
                             <ul className="mt-4 space-y-3">
-                                {user.followings.slice(0, 4).map((person : any) => (
+                                {user.followings.slice(0, 4).map((person: any) => (
                                     <li key={person.id} className="flex items-center gap-3">
                                         <img
                                             src={person.receiver.avatar || defaultAvatar}

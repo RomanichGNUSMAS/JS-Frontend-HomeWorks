@@ -33,12 +33,6 @@ const navItems = [
     },
 ];
 
-const suggestedUsers = [
-    { name: "Alex Rivera", handle: "@alex_r", avatar: "https://i.pravatar.cc/80?img=12" },
-    { name: "Jordan Lee", handle: "@jordan", avatar: "https://i.pravatar.cc/80?img=32" },
-    { name: "Sam Chen", handle: "@samc", avatar: "https://i.pravatar.cc/80?img=45" },
-];
-
 export const Home: React.FC = () => {
     const [text,setText] = React.useState<string>('')
     const [user, setUser] = React.useState<Account | null>(null);
