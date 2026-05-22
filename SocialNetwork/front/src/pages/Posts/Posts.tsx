@@ -1,9 +1,10 @@
 import React from "react";
+import { MyPosts } from "./myPosts";
 
-export const Posts:React.FC = () => {
+export const Posts: React.FC = () => {
     return (
-        <div>
-            posts
+        <div className="min-h-full">
+            <MyPosts />
         </div>
-    )
-}
+    );
+};

@@ -1,27 +1,40 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Axios } from "../../config/Axios";
 import type { Account } from "../../config/types/types";
-import { useAuth } from "../../hooks/useAuth";
 
 const defaultAvatar =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC";
 
-export const Profile: React.FC = () => {
+export const OtherProfile: React.FC = () => {
+    const { username } = useParams();
+    const navigate = useNavigate();
     const [user, setUser] = React.useState<Account | null>(null);
-    useAuth(setUser);
+
+    React.useEffect(() => {
+        if (!username) {
+            navigate('/profile');
+            return;
+        }
+
+        Axios.get<{ user: Account }>(`/account/${username}`)
+            .then((response) => {
+                setUser(response.data.user);
+            })
+            .catch(() => {
+                navigate('/profile');
+            });
+    }, [username, navigate]);
 
     if (!user) return null;
 
     const fullName = `${user.firstName} ${user.lastName}`;
     const followersCount = typeof user.followersCount === 'number' ? user.followersCount : (user.followers?.length ?? 0);
     const followingCount = typeof user.followingsCount === 'number' ? user.followingsCount : (user.followings?.length ?? 0);
-    const bio =
-        user.bio?.trim() ||
-        "No bio yet — tell the world a little about yourself.";
+    const bio = user.bio?.trim() || "No bio yet — tell the world a little about yourself.";
 
     return (
         <div className="space-y-6">
-            {/* cover + header */}
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-violet-950/30">
                 <div className="relative h-36 sm:h-44">
                     <div className="absolute inset-0 bg-gradient-to-r from-violet-600/80 via-fuchsia-600/60 to-cyan-500/40" />
@@ -63,11 +76,17 @@ export const Profile: React.FC = () => {
                                 <p className="mt-1 text-sm text-violet-300/90">@{user.username}</p>
                             </div>
                         </div>
+
+                        <Link
+                            to="/profile"
+                            className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-violet-500/40 hover:bg-violet-500/10"
+                        >
+                            Back to my profile
+                        </Link>
                     </div>
                 </div>
             </div>
 
-            {/* stats */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-sm">
                     <p className="text-2xl font-bold text-violet-300">{followersCount}</p>
@@ -82,7 +101,7 @@ export const Profile: React.FC = () => {
                     </p>
                 </div>
                 <div className="col-span-2 rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/80 to-violet-950/40 p-4 text-center sm:col-span-1">
-                    <p className="text-2xl font-bold text-cyan-300">{user.posts.length || "no posts"}</p>
+                    <p className="text-2xl font-bold text-cyan-300">{user.posts?.length || 0}</p>
                     <p className="mt-1 text-xs font-medium uppercase tracking-wider text-slate-500">
                         Posts
                     </p>
@@ -91,7 +110,6 @@ export const Profile: React.FC = () => {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">
-                {/* bio */}
                 <section className="lg:col-span-2">
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
                         <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-slate-400">
@@ -104,7 +122,6 @@ export const Profile: React.FC = () => {
                     </div>
                 </section>
 
-                {/* details */}
                 <section className="space-y-4">
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
                         <h2 className="text-sm font-semibold text-slate-300">Account details</h2>
@@ -132,9 +149,9 @@ export const Profile: React.FC = () => {
                             </svg>
                         </div>
                         <p className="mt-3 text-sm font-medium text-slate-400">Posts</p>
-                        <p className="mt-1 text-xs text-slate-600">{user.posts.length || 0} total</p>
+                        <p className="mt-1 text-xs text-slate-600">{user.posts?.length || 0} total</p>
                         <Link
-                            to="/posts"
+                            to={`/personposts/${user.username}`}
                             className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-violet-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-violet-500"
                         >
                             View all posts
@@ -143,7 +160,6 @@ export const Profile: React.FC = () => {
                 </section>
             </div>
 
-            {/* followers preview */}
             {(user.followers?.length > 0 || user.followings?.length > 0) && (
                 <div className="grid gap-4 sm:grid-cols-2">
                     {user.followers?.length > 0 && (
@@ -152,20 +168,19 @@ export const Profile: React.FC = () => {
                                 Recent followers
                             </h3>
                             <ul className="mt-4 space-y-3">
-                                {user.followers.slice(0, 4).map((person:any) => (
-                                    
+                                {user.followers.slice(0, 4).map((person) => (
                                     <li key={person.id} className="flex items-center gap-3">
                                         <img
-                                            src={person.sender.avatar || defaultAvatar}
+                                            src={person.avatar || defaultAvatar}
                                             alt=""
                                             className="h-10 w-10 rounded-full object-cover ring-2 ring-violet-500/30"
                                         />
                                         <div className="min-w-0 flex-1">
                                             <p className="truncate text-sm font-medium text-white">
-                                                {person.sender.firstName} {person.sender.lastName}
+                                                {person.firstName} {person.lastName}
                                             </p>
                                             <p className="truncate text-xs text-slate-500">
-                                                @{person.sender.username}
+                                                @{person.username}
                                             </p>
                                         </div>
                                     </li>
@@ -179,19 +194,19 @@ export const Profile: React.FC = () => {
                                 Following
                             </h3>
                             <ul className="mt-4 space-y-3">
-                                {user.followings.slice(0, 4).map((person : any) => (
+                                {user.followings.slice(0, 4).map((person) => (
                                     <li key={person.id} className="flex items-center gap-3">
                                         <img
-                                            src={person.receiver.avatar || defaultAvatar}
+                                            src={person.avatar || defaultAvatar}
                                             alt=""
                                             className="h-10 w-10 rounded-full object-cover ring-2 ring-fuchsia-500/30"
                                         />
                                         <div className="min-w-0 flex-1">
                                             <p className="truncate text-sm font-medium text-white">
-                                                {person.receiver.firstName} {person.receiver.lastName}
+                                                {person.firstName} {person.lastName}
                                             </p>
                                             <p className="truncate text-xs text-slate-500">
-                                                @{person.receiver.username}
+                                                @{person.username}
                                             </p>
                                         </div>
                                     </li>
@@ -203,4 +218,4 @@ export const Profile: React.FC = () => {
             )}
         </div>
     );
-};
+}

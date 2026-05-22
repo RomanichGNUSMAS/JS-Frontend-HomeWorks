@@ -1,8 +1,8 @@
 import React from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Axios } from "./config/Axios";
-import type { Account, User } from "./config/types/types";
-import type { AxiosDefaults } from "axios";
+import type { Account } from "./config/types/types";
+import { useAuth } from "./hooks/useAuth";
 
 const navItems = [
     {
@@ -41,26 +41,9 @@ const suggestedUsers = [
 ];
 
 export const Home: React.FC = () => {
-    
-    const navigate = useNavigate();
+    const [text,setText] = React.useState<string>('')
     const [user, setUser] = React.useState<Account | null>(null);
-
-    React.useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            navigate("/signup");
-        } else {
-            Axios.get<{ user: Account}>("/auth/user", {
-                headers: { Authorization:`Bearer ${localStorage.getItem('token')}`}
-            })
-                .then((res) => {
-                    setUser(res.data.user);
-                })
-                .catch(() => {
-                    navigate("/signup");
-                });
-        }
-    }, []);
+    useAuth(setUser)
 
     return user && (
         <div className="min-h-screen bg-slate-950 text-slate-100">
@@ -94,7 +77,7 @@ export const Home: React.FC = () => {
                                 <NavLink
                                     key={item.to}
                                     to={item.to}
-                                    end={item.to === "/"}
+                                    end
                                     className={({ isActive }) =>
                                         [
                                             "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
@@ -114,7 +97,7 @@ export const Home: React.FC = () => {
                         <div className="mt-auto rounded-xl border border-white/10 bg-slate-900/60 p-3">
                             <div className="flex items-center gap-3">
                                 <img
-                                    src={user.avatar}
+                                    src={user.avatar || "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC"}
                                     alt=""
                                     className="h-11 w-11 rounded-full object-cover ring-2 ring-violet-500/50"
                                 />
@@ -123,18 +106,18 @@ export const Home: React.FC = () => {
                                     <p className="truncate text-xs text-slate-400">@{user.username}</p>
                                 </div>
                             </div>
-                            <button
-                                type="button"
-                                className="mt-3 w-full rounded-lg border border-white/10 bg-white/5 py-2 text-xs font-medium text-slate-300 transition hover:border-violet-500/40 hover:bg-violet-500/10 hover:text-white"
+                            <Link
+                                to="/settings"
+                                className="mt-3 block w-full rounded-lg border border-white/10 bg-white/5 py-2 text-center text-xs font-medium text-slate-300 transition hover:border-violet-500/40 hover:bg-violet-500/10 hover:text-white"
                             >
                                 Settings
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </aside>
 
                 {/* main column */}
-                <div className="flex min-w-0 flex-1 flex-col">
+                <div className="flex min-w-0 w-full flex-1 flex-col">
                     {/* top bar */}
                     <header className="sticky top-0 z-20 mb-6 rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 shadow-lg shadow-black/20 backdrop-blur-xl sm:px-5">
                         <div className="flex items-center gap-4">
@@ -147,22 +130,31 @@ export const Home: React.FC = () => {
                                 <span className="font-bold">Connect</span>
                             </div>
 
-                            <div className="relative hidden flex-1 sm:block">
-                                <svg
-                                    className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={1.5}
+                            <div className="hidden flex-1 items-center gap-3 sm:flex">
+                                <div className="relative flex-1">
+                                    <svg
+                                        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={1.5}
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                    </svg>
+                                    <input
+                                        type="search"
+                                        value={text}
+                                        onChange={e => setText(e.target.value)}
+                                        placeholder="Search people, posts, tags…"
+                                        className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-slate-200 placeholder:text-slate-500 outline-none transition focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20"
+                                    />
+                                </div>
+                                <Link
+                                    to={`/account/search/${text}`}
+                                    className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/30 transition hover:from-violet-500 hover:to-fuchsia-500"
                                 >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                                </svg>
-                                <input
-                                    type="search"
-                                    placeholder="Search people, posts, tags…"
-                                    className="w-full max-w-md rounded-xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-slate-200 placeholder:text-slate-500 outline-none transition focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20"
-                                    readOnly
-                                />
+                                    Search
+                                </Link>
                             </div>
 
                             <div className="ml-auto flex items-center gap-2 sm:gap-3">
@@ -176,12 +168,12 @@ export const Home: React.FC = () => {
                                     </svg>
                                     <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-fuchsia-500 ring-2 ring-slate-950" />
                                 </button>
-                                <button
-                                    type="button"
+                                <Link
+                                    to='newpost'
                                     className="hidden rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 transition hover:from-violet-500 hover:to-fuchsia-500 sm:block"
                                 >
                                     New Post
-                                </button>
+                                </Link>
                                 <img
                                     src={user.avatar || "https://i.pravatar.cc/150?img=68"}
                                     alt=""
@@ -192,73 +184,13 @@ export const Home: React.FC = () => {
                     </header>
 
                     {/* page content */}
-                    <main className="flex-1 rounded-2xl border border-white/10 bg-white/[0.02] p-1 shadow-inner shadow-black/20 sm:p-2">
-                        <div className="min-h-[420px] rounded-xl p-4 sm:p-6">
+                    <main className="flex w-full flex-1 flex-col rounded-2xl border border-white/10 bg-white/[0.02] p-4 shadow-inner shadow-black/20 sm:p-6">
+                        <div className="w-full min-h-full flex-1">
                             <Outlet />
                         </div>
                     </main>
                 </div>
 
-                {/* right sidebar */}
-                <aside className="sticky top-6 hidden h-[calc(100vh-3rem)] w-72 shrink-0 xl:block">
-                    <div className="flex h-full flex-col gap-4">
-                        {/* stats card */}
-                        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
-                            <h2 className="text-sm font-semibold text-slate-300">Your network</h2>
-                            <div className="mt-4 grid grid-cols-2 gap-3">
-                                <div className="rounded-xl bg-violet-500/10 p-3 text-center ring-1 ring-violet-500/20">
-                                    <p className="text-2xl font-bold text-violet-300">{user?.followers?.length ?? "—"}</p>
-                                    <p className="text-xs text-slate-400">Followers</p>
-                                </div>
-                                <div className="rounded-xl bg-fuchsia-500/10 p-3 text-center ring-1 ring-fuchsia-500/20">
-                                    <p className="text-2xl font-bold text-fuchsia-300">{user?.followings?.length ?? "—"}</p>
-                                    <p className="text-xs text-slate-400">Following</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* suggestions */}
-                        <div className="flex-1 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
-                            <h2 className="text-sm font-semibold text-slate-300">Suggested for you</h2>
-                            <ul className="mt-4 space-y-3">
-                                {suggestedUsers.map((person) => (
-                                    <li key={person.handle} className="flex items-center gap-3">
-                                        <img
-                                            src={person.avatar}
-                                            alt=""
-                                            className="h-10 w-10 rounded-full object-cover"
-                                        />
-                                        <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm font-medium">{person.name}</p>
-                                            <p className="truncate text-xs text-slate-500">{person.handle}</p>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            className="shrink-0 rounded-lg bg-violet-600/80 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-violet-500"
-                                        >
-                                            Follow
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* trending */}
-                        <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/80 to-violet-950/40 p-5">
-                            <h2 className="text-sm font-semibold text-slate-300">Trending</h2>
-                            <ul className="mt-3 space-y-2 text-sm">
-                                {["#weekendvibes", "#photography", "#devlife"].map((tag) => (
-                                    <li
-                                        key={tag}
-                                        className="cursor-default rounded-lg px-2 py-1.5 text-slate-400 transition hover:bg-white/5 hover:text-violet-300"
-                                    >
-                                        {tag}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                </aside>
             </div>
 
             {/* mobile bottom nav */}
