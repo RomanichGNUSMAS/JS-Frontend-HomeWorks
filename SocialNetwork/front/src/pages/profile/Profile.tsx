@@ -1,18 +1,22 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import type { Account } from "../../config/types/types";
+import type { WholeRequest } from "../../config/types/types";
 import { useAuth } from "../../hooks/useAuth";
 import { Axios } from "../../config/Axios";
 import { UserDetails } from "./components/UserDetails";
 import { FollowsPreview } from "./components/FollowPreview";
+import { ConfirmModal } from "./components/confirmModal";
 
 const defaultAvatar =
-   "https://img.icons8.com/fluent/1200/name.jpg";
+    "https://img.icons8.com/fluent/1200/name.jpg";
+
 
 export const Profile: React.FC = () => {
-    const [user, setUser] = React.useState<Account | null>(null);
+    const [{user}, setUser] = React.useState<WholeRequest | { user: null }>({ user: null });
     const ref = React.useRef<HTMLInputElement | null>(null);
     const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    const [isChanged,setChange] = React.useState(false);
+    const [avatar,setAvatar] = React.useState(user?.avatar || defaultAvatar);
     useAuth(setUser);
 
     if (!user) return null;
@@ -55,8 +59,10 @@ export const Profile: React.FC = () => {
                 <div className="relative px-5 pb-6 sm:px-8">
                     <div className="-mt-14 flex flex-col gap-5 sm:-mt-16 sm:flex-row sm:items-end sm:justify-between">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-5">
+                            <input onChange={e => setChange(true)} className="hidden" ref={inputRef} type="file" />
                             <img
-                                src={user.avatar || defaultAvatar}
+                                onClick={e => inputRef.current?.click()}
+                                src={user?.avatar || avatar}
                                 alt=""
                                 className="h-28 w-28 shrink-0 rounded-2xl border-4 border-slate-950 object-cover shadow-xl shadow-black/40 ring-2 ring-violet-500/40 sm:h-32 sm:w-32"
                             />
@@ -136,6 +142,7 @@ export const Profile: React.FC = () => {
 
             {/* followers preview */}
             <FollowsPreview user={user} defaultAvatar={defaultAvatar} />
+            {isChanged && <ConfirmModal setChange={setChange} inputRef={inputRef} setAvatar={setAvatar} />}
         </div>
     );
 };

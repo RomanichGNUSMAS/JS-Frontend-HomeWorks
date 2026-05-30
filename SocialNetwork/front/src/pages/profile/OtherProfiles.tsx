@@ -1,13 +1,13 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { Axios } from "../../config/Axios";
-import type { Account } from "../../config/types/types";
+import type { Account, WholeRequest } from "../../config/types/types";
 import { useAuth } from "../../hooks/useAuth";
 
 export const OtherProfiles: React.FC = () => {
     const { text } = useParams();
     const [data, setData] = React.useState<Account[]>([])
-    const [currentUser,setUser] = React.useState<Account | null>(null)
+    const [currentUser,setUser] = React.useState<WholeRequest | null>(null)
 
     useAuth(setUser)
     React.useEffect(() => {
@@ -27,7 +27,7 @@ export const OtherProfiles: React.FC = () => {
 
     return currentUser && (
         <div className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:grid-cols-2 xl:grid-cols-3">
-            {data.map(user => currentUser.id == user.id ? undefined : (
+            {data.map(user => currentUser.user.id == user.id ? undefined : (
                 <div
                     key={user.id}
                     className="overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80 p-5 shadow-2xl shadow-violet-950/40 transition duration-300 hover:-translate-y-1 hover:bg-slate-900/90"

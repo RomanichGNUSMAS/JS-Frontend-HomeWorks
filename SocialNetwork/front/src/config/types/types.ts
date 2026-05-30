@@ -31,3 +31,9 @@ export interface Account extends RegisterUser {
     posts:Post[]
 }
 
+export interface WholeRequest {
+    followStatus: boolean,
+    followsMe: boolean,
+    requestSent: boolean,
+    user: Account
+}

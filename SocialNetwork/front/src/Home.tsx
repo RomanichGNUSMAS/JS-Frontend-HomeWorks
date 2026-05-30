@@ -1,10 +1,10 @@
 import React from "react";
-import { Link, NavLink, Outlet } from "react-router-dom";
-import type { Account } from "./config/types/types";
-import { useAuth } from "./hooks/useAuth";
+import { Link, Outlet } from "react-router-dom";
+import type { Account, WholeRequest } from "./config/types/types";
 import { Header } from "./components/Header";
 import { NavItems } from "./components/navItems";
 import { NavMobileItems } from "./pages/profile/components/NavMobileItems";
+import { useAuth } from "./hooks/useAuth";
 
 const navItems = [
     {
@@ -38,7 +38,7 @@ const navItems = [
 
 export const Home: React.FC = () => {
     const [text,setText] = React.useState<string>('')
-    const [user, setUser] = React.useState<Account | null>(null);
+    const [{user}, setUser] = React.useState<WholeRequest | { user: null } >({user : null});
     useAuth(setUser)
 
     return user && (
@@ -76,7 +76,7 @@ export const Home: React.FC = () => {
                         <div className="mt-auto rounded-xl border border-white/10 bg-slate-900/60 p-3">
                             <div className="flex items-center gap-3">
                                 <img
-                                    src={user.avatar || "https://img.icons8.com/fluent/1200/name.jpg" }
+                                    src={`http://localhost:4002/${user.avatar}` || "https://img.icons8.com/fluent/1200/name.jpg" }
                                     alt=""
                                     className="h-11 w-11 rounded-full object-cover ring-2 ring-violet-500/50"
                                 />

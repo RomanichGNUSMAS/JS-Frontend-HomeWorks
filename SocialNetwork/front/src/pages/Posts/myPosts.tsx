@@ -1,24 +1,37 @@
 import React from "react";
-import type { Account } from "../../config/types/types";
+import type { Account, WholeRequest } from "../../config/types/types";
 import { useAuth } from "../../hooks/useAuth";
 import { Axios } from "../../config/Axios";
 import { Link } from "react-router-dom";
 
 export const MyPosts: React.FC = () => {
-    const [user, setUser] = React.useState<Account | null>(null);
+    const [{user}, setUser] = React.useState<WholeRequest | { user:null }>({ user:null});
     useAuth(setUser);
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Delete this post?")) return;
-        try {
-            await Axios.delete(`/posts/${id}`);
-            if (!user) return;
-            const newUser = { ...user, posts: user.posts.filter((post) => post.id !== id) };
-            setUser(newUser);
-        } catch (err: any) {
-            console.error(err?.message || err);
-        }
-    };
+    if (!confirm("Delete this post?")) return;
+    
+    try {
+        await Axios.delete(`/posts/${id}`);
+        
+        if (!user) return;
+
+        setUser((prevState) => {
+            if (!prevState || !prevState.user) return prevState;
+
+            return {
+                ...prevState,
+                user: {
+                    ...prevState.user,
+                    posts: prevState.user.posts.filter((post) => post.id !== id)
+                }
+            };
+        });
+        
+    } catch (err: any) {
+        console.error(err?.message || err);
+    }
+};
 
     const fallbackImage =
         "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'%3E%3Crect width='800' height='400' fill='%232a303c'/%3E%3Ctext x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23a1a1aa' font-family='system-ui, sans-serif' font-size='24'%3ENo Image Available%3C/text%3E%3C/svg%3E";

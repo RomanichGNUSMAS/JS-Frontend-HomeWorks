@@ -3,7 +3,14 @@ import type { Account, User } from "../config/types/types"
 import { Axios } from "../config/Axios"
 import { useNavigate } from "react-router-dom"
 
-export const useAuth = (foo: (user:Account) => void) => {
+type Props = {
+    followStatus: boolean,
+    followsMe: boolean,
+    requestSent: boolean,
+    user: Account
+}
+
+export const useAuth = (foo: (user:Props) => void) => {
     const navigate = useNavigate();
     React.useEffect(() => {
 
@@ -11,9 +18,9 @@ export const useAuth = (foo: (user:Account) => void) => {
         if (!token) {
             navigate("/signup");
         } else {
-            Axios.get<{ user: Account }>("/auth/user")
+            Axios.get("/auth/user")
                 .then((res) => {
-                    foo(res.data.user);
+                    foo(res.data);
                 })
                 .catch(() => {
                     navigate("/signup");

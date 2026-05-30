@@ -1,28 +1,43 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { Axios } from "../../config/Axios";
-import type { Account } from "../../config/types/types";
+import type { Account, WholeRequest } from "../../config/types/types";
+import { useGetRequest } from "../../hooks/useGetRequest";
+import { useAuth } from "../../hooks/useAuth";
 
-type Props = {
-    followStatus: boolean,
-    followsMe: boolean,
-    requestSent: boolean,
-    user: Account
+
+type FollowRequest = {
+    id: number,
+    sender: Account
 }
 
 export const OtherProfile: React.FC = () => {
     const { username } = useParams();
-    const [data, setData] = React.useState<Props | null>(null);
+    const { loading,data,refetch } = useGetRequest<WholeRequest>(`/account/${username}`)
+    const [me,setMe] = React.useState<WholeRequest | null>(null);
+    const [incomingRequest, setIncomingRequest] = React.useState<FollowRequest | null>(null);
+    useAuth(setMe)
 
     React.useEffect(() => {
-        if (!username) return;
+        if (!me || !data || me.user.id === data.user.id) {
+            setIncomingRequest(null);
+            return;
+        }
 
-        Axios.get(`/account/${username}`)
-            .then(response => setData(response.data))
-            .catch(err => console.log(err));
-    }, [username]);
+        Axios.get<{ requests: FollowRequest[] }>('/follow/requests')
+            .then(response => {
+                const request = response.data.requests.find(
+                    (req) => req.sender?.id === data.user.id
+                );
+                setIncomingRequest(request || null);
+            })
+            .catch(err => {
+                console.error(err.message);
+                setIncomingRequest(null);
+            });
+    }, [me, data]);
 
-    if (!data) {
+    if (loading && !data) {
         return (
             <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-slate-900/80 p-8 text-center text-slate-300 shadow-2xl shadow-black/30">
                 <p className="text-lg font-semibold text-slate-100">Loading profile…</p>
@@ -30,13 +45,33 @@ export const OtherProfile: React.FC = () => {
         )
     }
 
-    return (
+    const handleFollow = () => {
+        if(!data) return;
+        Axios.post(`/follow/${data.user.id}`)
+            .then(() => {
+                refetch();
+            })
+            .catch(err => console.error(err.message))
+    }
+
+    const handleAcceptRequest = () => {
+        if (!incomingRequest) return;
+
+        Axios.patch(`/follow/requests/accept/${incomingRequest.id}`)
+            .then(() => {
+                refetch();
+                setIncomingRequest(null);
+            })
+            .catch(err => console.error(err.message));
+    }
+
+    return me && data && (
         <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-slate-950/90 p-6 shadow-2xl shadow-violet-950/40">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex items-center gap-5">
                         <img
-                            src={data.user.avatar || "https://img.icons8.com/fluent/1200/name.jpg"}
+                            src={(data.user.avatar && `http://localhost:4002/${data.user.avatar}`) || "https://img.icons8.com/fluent/1200/name.jpg"}
                             alt={data.user.username}
                             className="h-28 w-28 rounded-[2rem] object-cover ring-2 ring-violet-500/60"
                         />
@@ -46,16 +81,22 @@ export const OtherProfile: React.FC = () => {
                         </div>
                     </div>
 
-                    <button className="inline-flex rounded-2xl bg-violet-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-400">
-                        {data.requestSent ?
-                            "Cancel Request" :
-                            data.followStatus ?
+                    {incomingRequest ? (
+                        <button onClick={handleAcceptRequest} className="inline-flex rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-400">
+                            Accept Request
+                        </button>
+                    ) : (
+                        <button onClick={handleFollow} className="inline-flex rounded-2xl bg-violet-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-400">
+                            {data.followStatus ?
                                 "Unfollow" :
-                                data.followsMe ?
-                                    "Follow Back" :
-                                    "Follow"
-                        }
-                    </button>
+                                data.requestSent ?
+                                    "Cancel Request" :
+                                    data.followsMe ?
+                                        "Follow Back" :
+                                        "Follow"
+                            }
+                        </button>
+                    )}
                 </div>
 
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -70,39 +111,7 @@ export const OtherProfile: React.FC = () => {
                 </div>
             </div>
 
-            <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-slate-950/90 p-6 shadow-2xl shadow-black/30">
-                <h2 className="text-xl font-semibold text-slate-100">Posts</h2>
-
-                {data.user.isAccountPrivate && !data.followsMe && !data.followStatus ? (
-                    <div className="mt-6 rounded-3xl bg-white/5 p-6 text-slate-300">
-                        <p className="text-base text-slate-200">This account is private.</p>
-                        <p className="mt-2 text-sm text-slate-400">Follow them to see their posts.</p>
-                    </div>
-                ) : (
-                    <div className="mt-6 space-y-5">
-                        {data.user.posts.length === 0 ? (
-                            <div className="rounded-3xl bg-white/5 p-6 text-slate-300">
-                                <p className="text-base text-slate-200">No posts yet.</p>
-                            </div>
-                        ) : (
-                            data.user.posts.map((post, index) => (
-                                <div key={post.id ?? index} className="rounded-3xl border border-white/10 bg-slate-900/80 p-5">
-                                    <img
-                                        src={post.postImage}
-                                        alt={post.title}
-                                        className="w-full rounded-3xl object-cover"
-                                    />
-                                    <div className="mt-4 space-y-2 text-slate-300">
-                                        <p className="text-lg font-semibold text-slate-100">{post.title}</p>
-                                        <p className="text-sm leading-6 text-slate-400">{post.description}</p>
-                                        <p className="text-xs uppercase tracking-wide text-slate-500">{post.updatedAt}</p>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                )}
-            </div>
+            
         </div>
     )
 }
