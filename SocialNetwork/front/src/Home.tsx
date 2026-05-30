@@ -2,6 +2,9 @@ import React from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import type { Account } from "./config/types/types";
 import { useAuth } from "./hooks/useAuth";
+import { Header } from "./components/Header";
+import { NavItems } from "./components/navItems";
+import { NavMobileItems } from "./pages/profile/components/NavMobileItems";
 
 const navItems = [
     {
@@ -66,31 +69,14 @@ export const Home: React.FC = () => {
 
                         {/* nav */}
                         <nav className="flex flex-1 flex-col gap-1">
-                            {navItems.map((item) => (
-                                <NavLink
-                                    key={item.to}
-                                    to={item.to}
-                                    end
-                                    className={({ isActive }) =>
-                                        [
-                                            "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
-                                            isActive
-                                                ? "bg-gradient-to-r from-violet-600/80 to-fuchsia-600/60 text-white shadow-lg shadow-violet-900/40"
-                                                : "text-slate-400 hover:bg-white/5 hover:text-white",
-                                        ].join(" ")
-                                    }
-                                >
-                                    {item.icon}
-                                    {item.label}
-                                </NavLink>
-                            ))}
+                            <NavItems navItems={navItems}/>
                         </nav>
 
                         {/* user card */}
                         <div className="mt-auto rounded-xl border border-white/10 bg-slate-900/60 p-3">
                             <div className="flex items-center gap-3">
                                 <img
-                                    src={user.avatar || "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC"}
+                                    src={user.avatar || "https://img.icons8.com/fluent/1200/name.jpg" }
                                     alt=""
                                     className="h-11 w-11 rounded-full object-cover ring-2 ring-violet-500/50"
                                 />
@@ -112,69 +98,7 @@ export const Home: React.FC = () => {
                 {/* main column */}
                 <div className="flex min-w-0 w-full flex-1 flex-col">
                     {/* top bar */}
-                    <header className="sticky top-0 z-20 mb-6 rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 shadow-lg shadow-black/20 backdrop-blur-xl sm:px-5">
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2 lg:hidden">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500">
-                                    <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-                                    </svg>
-                                </div>
-                                <span className="font-bold">Connect</span>
-                            </div>
-
-                            <div className="hidden flex-1 items-center gap-3 sm:flex">
-                                <div className="relative flex-1">
-                                    <svg
-                                        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                        strokeWidth={1.5}
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                                    </svg>
-                                    <input
-                                        type="search"
-                                        value={text}
-                                        onChange={e => setText(e.target.value)}
-                                        placeholder="Search people, posts, tags…"
-                                        className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-slate-200 placeholder:text-slate-500 outline-none transition focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20"
-                                    />
-                                </div>
-                                <Link
-                                    to={`/account/search/${text}`}
-                                    className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/30 transition hover:from-violet-500 hover:to-fuchsia-500"
-                                >
-                                    Search
-                                </Link>
-                            </div>
-
-                            <div className="ml-auto flex items-center gap-2 sm:gap-3">
-                                <button
-                                    type="button"
-                                    className="relative rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-400 transition hover:border-violet-500/30 hover:bg-violet-500/10 hover:text-white"
-                                    aria-label="Notifications"
-                                >
-                                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                                    </svg>
-                                    <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-fuchsia-500 ring-2 ring-slate-950" />
-                                </button>
-                                <Link
-                                    to='newpost'
-                                    className="hidden rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 transition hover:from-violet-500 hover:to-fuchsia-500 sm:block"
-                                >
-                                    New Post
-                                </Link>
-                                <img
-                                    src={user.avatar || "https://i.pravatar.cc/150?img=68"}
-                                    alt=""
-                                    className="h-9 w-9 rounded-full object-cover ring-2 ring-violet-500/40 lg:hidden"
-                                />
-                            </div>
-                        </div>
-                    </header>
+                    <Header user={user} text={text} setText={setText}/>
 
                     {/* page content */}
                     <main className="flex w-full flex-1 flex-col rounded-2xl border border-white/10 bg-white/[0.02] p-4 shadow-inner shadow-black/20 sm:p-6">
@@ -189,23 +113,7 @@ export const Home: React.FC = () => {
             {/* mobile bottom nav */}
             <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/10 bg-slate-950/95 px-2 py-2 backdrop-blur-xl lg:hidden">
                 <ul className="mx-auto flex max-w-md justify-around">
-                    {navItems.map((item) => (
-                        <li key={item.to}>
-                            <NavLink
-                                to={item.to}
-                                end={item.to === "/"}
-                                className={({ isActive }) =>
-                                    [
-                                        "flex flex-col items-center gap-0.5 rounded-lg px-4 py-2 text-[10px] font-medium transition",
-                                        isActive ? "text-violet-400" : "text-slate-500",
-                                    ].join(" ")
-                                }
-                            >
-                                {item.icon}
-                                {item.label}
-                            </NavLink>
-                        </li>
-                    ))}
+                    <NavMobileItems navItems={navItems} />
                 </ul>
             </nav>
 

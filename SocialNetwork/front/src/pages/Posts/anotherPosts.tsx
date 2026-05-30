@@ -20,7 +20,7 @@ export const AnotherPosts: React.FC = () => {
     React.useEffect(() => {
         console.log(username)
         if (!username) {
-            //navigate('/profile');
+            navigate('/profile');
             return;
         }
 

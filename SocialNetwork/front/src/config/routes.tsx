@@ -14,6 +14,7 @@ import { OtherProfiles } from "../pages/profile/OtherProfiles";
 import { Another } from "../pages/settings/another";
 import { OtherProfile } from "../pages/profile/OtherProfile";
 import { AnotherPosts } from "../pages/Posts/anotherPosts";
+import { NotFound } from "../pages/NotFound";
 
 export const routes = createBrowserRouter([
     { 
@@ -36,5 +37,6 @@ export const routes = createBrowserRouter([
         ]
     },
     {path:'login', element:<Login />},
-    {path:'signup', element:<Signup />}
+    {path:'signup', element:<Signup />},
+    {path:'*', element:<NotFound />}
 ])

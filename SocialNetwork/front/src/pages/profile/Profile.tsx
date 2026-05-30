@@ -3,13 +3,16 @@ import { Link } from "react-router-dom";
 import type { Account } from "../../config/types/types";
 import { useAuth } from "../../hooks/useAuth";
 import { Axios } from "../../config/Axios";
+import { UserDetails } from "./components/UserDetails";
+import { FollowsPreview } from "./components/FollowPreview";
 
 const defaultAvatar =
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACUCAMAAABY3hBoAAAAY1BMVEX///8AAABERET5+fny8vL29va3t7cXFxdVVVXPz8/Y2Njh4eHMzMzu7u7S0tJfX1+Li4sgICCtra1paWlPT0/BwcGjo6OXl5eEhIQSEhIsLCw+Pj4yMjJaWlpxcXE5OTl8fHwMOrCfAAAE40lEQVR4nO1b6baCOAy+yKJSUFYVV97/KWe8zk1SQGlpU8+c0++v0HylaXZ/fjw8PDw8PDw8PDw8PDwsIxZpcqz3TbOviyoV0bf5vJAnxT6QcCuS/Nusoqzuggl0dfbV75Zspli90FThl1iF7fU9rSfOyVeoifozrSfq1D2valK3Rjg4phWelGj9iz52ySu+qPIKgqvD6ylWE/Jv976/7x/jXx7CFa9oLUvuVqcsin9vYBhHWbEa/B44MrfR4HudsuET20J+YuWGWSN9rdOk0LyQLu3KBa8jlXjbvXsslRzokZ9XS+UVH2xBKO0g4eYVlurSEnrk3OaMqPW6nXu4Jbs48fJKiSWY5SWde/dWG63gjpKUvGCFz9ecvATKuau90eMbnA6AiFFU5rjT3coSCPSEleo7eDWvfJ8MhWyUb394c2DL9ktk4M3ccPEKUcN0XkMt40oBUpCg5frQNY3CEEtYKGELrxVMxCAt0ouvcoiT9jy8QhCgacTBXTQ8SpZfFh4JqABT9J+e/wRoJovgMEseR76DIEbTUoIlW29ZiGUQ8mheezAzax57gcQ0T0QwE9vCUSqEiNKLzMRQx5RDixfA95c8OiagHKaZjIG5OPNUpTAD1wz5ILzkysihrqkejT0RQrTEZPlx56XWkaBh5gquMYDVsrAYKWpeGmXkIEGrSIJFGLagH3MRDS3G7ZRcvEikqKEtmPLxlXwyCN/V1V+A6rNF1j80TVLOeDB7uzG2I0gpQvFikrIK1538BdaV1GKrlLzAyYt+sofKyZA6Mm+PJCSV1ctsZyEmvG7MJUVMeuddHylbBAFPxENAS/ifw5iUdg2ZK50/NIl7mrMPNy2hZeSHgxZELrcW3hzRTmpTsFYTAYkksrtPnKfo5XYSe5V/ilkQXA8pOakorYZNQ1bTSnEcCA66pi+qdrdrq6LfDHtvLvo1f2iHsj/B0Tm+kKh1xJ2e4wv5h4kLio3zmZVhO3UaF9e8RDVP6oWDs474E9V5ntEfyoOzeZV2ZBBm4GaUJlIYnRli70DVqvefa/3+p457lCYcGf1fsXWRtG223WZtmxT1JL8Ta6AoxoMozX08XhclfTN6kLH5Jod+v+jbN/F11I7Gkkq2vHLoIVefZ+rCamiDmbzmgNe5mk1GouTqgJnMqzyq2aZDyc1M5qU+4yfu0ouaBe950LQt6LRCv4MUIlnu2uTUTqw1F0/pcZ6tWo2YuqGN9tKCZr56leUZUHvfLPB7EWVmsc+bUbVf5I9jegWsXYCQ+JfHwhlNWl+Zr8YoghzkarHq5mR3lgoZZNIoMGgG0WXs2AwyaWSUipEE/m4jpN2R9cxWIju0EWhgAlkaKm2MKUxjzot8MOOcOrH5yTDe2xub7BAdSG+6lkAPbMEuEktt6jIPsNLFnBdVWNPalOVOEE5Gnc0WwjDMTlAQY5/AzMiiN7KUsaJqGJ1lCEHB2tJkgoCgsTY5Amw2WpvIB/Vfm9xLtK7Wag9YWDO5TagR1mZMMMgwUTKw1Pb+wxNBE8BkLBZ2ZyVOeQFjjOVr4ESuxR4CWqDl1xL1wWKxHrV/+bVEB2Ixs8cZieWLQvxkc+px8XwcAc6JWpxIQ9u/3DaCGSstFhxy8CbLb1T1WL2wpCzwDvHmv0UfjttfHh4eHh4eHh4eHh4e/2f8A+u5L3xKDUsWAAAAAElFTkSuQmCC";
+   "https://img.icons8.com/fluent/1200/name.jpg";
 
 export const Profile: React.FC = () => {
     const [user, setUser] = React.useState<Account | null>(null);
     const ref = React.useRef<HTMLInputElement | null>(null);
+    const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     useAuth(setUser);
 
     if (!user) return null;
@@ -22,20 +25,16 @@ export const Profile: React.FC = () => {
         "No bio yet — tell the world a little about yourself.";
 
     const handleInput = () => {
-        let timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
-            if (ref.current)
-                Axios.patch('/account/bio', { bio: ref.current.textContent })
-                    .catch(err => console.log(err.message))
-        }, 3000);
-        return function () {
-            clearTimeout(timeout)
-            timeout = setTimeout(() => {
-                if (ref.current)
-                    Axios.patch('/account/bio', { bio: ref.current.textContent })
-                        .catch(err => console.log(err.message))
-            },1000)
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
         }
-    }
+        timeoutRef.current = setTimeout(() => {
+            if (ref.current) {
+                Axios.patch('/account/bio', { bio: ref.current.textContent })
+                    .catch(err => console.log(err.message));
+            }
+        }, 1000);
+    };
     return (
         <div className="space-y-6">
             {/* cover + header */}
@@ -121,7 +120,7 @@ export const Profile: React.FC = () => {
                             ref={ref}
                             suppressContentEditableWarning={true}
                             contentEditable
-                            onInput={handleInput()}
+                            onInput={handleInput}
                             role="textbox"
                             aria-label="Edit bio"
                             className="mt-4 text-sm leading-relaxed text-slate-300 min-h-[7rem] p-3 rounded-lg bg-white/3 border border-white/6 focus:outline-none focus:ring-0 focus:border-white/10"
@@ -132,102 +131,11 @@ export const Profile: React.FC = () => {
                 </section>
 
                 {/* details */}
-                <section className="space-y-4">
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
-                        <h2 className="text-sm font-semibold text-slate-300">Account details</h2>
-                        <dl className="mt-4 space-y-3">
-                            {[
-                                { label: "First name", value: user.firstName },
-                                { label: "Last name", value: user.lastName },
-                                { label: "Username", value: `@${user.username}` },
-                            ].map((row) => (
-                                <div
-                                    key={row.label}
-                                    className="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2.5"
-                                >
-                                    <dt className="text-xs text-slate-500">{row.label}</dt>
-                                    <dd className="truncate text-sm font-medium text-slate-200">{row.value}</dd>
-                                </div>
-                            ))}
-                        </dl>
-                    </div>
-
-                    <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-5 text-center">
-                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 text-slate-500">
-                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
-                            </svg>
-                        </div>
-                        <p className="mt-3 text-sm font-medium text-slate-400">Posts</p>
-                        <p className="mt-1 text-xs text-slate-600">{user.posts.length || 0} total</p>
-                        <Link
-                            to="/posts"
-                            className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-violet-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-violet-500"
-                        >
-                            View all posts
-                        </Link>
-                    </div>
-                </section>
+                <UserDetails user={user} />
             </div>
 
             {/* followers preview */}
-            {(user.followers?.length > 0 || user.followings?.length > 0) && (
-                <div className="grid gap-4 sm:grid-cols-2">
-                    {user.followers?.length > 0 && (
-                        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                            <h3 className="text-sm font-semibold text-slate-300">
-                                Recent followers
-                            </h3>
-                            <ul className="mt-4 space-y-3">
-                                {user.followers.slice(0, 4).map((person: any) => (
-
-                                    <li key={person.id} className="flex items-center gap-3">
-                                        <img
-                                            src={person.sender.avatar || defaultAvatar}
-                                            alt=""
-                                            className="h-10 w-10 rounded-full object-cover ring-2 ring-violet-500/30"
-                                        />
-                                        <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm font-medium text-white">
-                                                {person.sender.firstName} {person.sender.lastName}
-                                            </p>
-                                            <p className="truncate text-xs text-slate-500">
-                                                @{person.sender.username}
-                                            </p>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    {user.followings?.length > 0 && (
-                        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                            <h3 className="text-sm font-semibold text-slate-300">
-                                Following
-                            </h3>
-                            <ul className="mt-4 space-y-3">
-                                {user.followings.slice(0, 4).map((person: any) => (
-                                    <li key={person.id} className="flex items-center gap-3">
-                                        <img
-                                            src={person.receiver.avatar || defaultAvatar}
-                                            alt=""
-                                            className="h-10 w-10 rounded-full object-cover ring-2 ring-fuchsia-500/30"
-                                        />
-                                        <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm font-medium text-white">
-                                                {person.receiver.firstName} {person.receiver.lastName}
-                                            </p>
-                                            <p className="truncate text-xs text-slate-500">
-                                                @{person.receiver.username}
-                                            </p>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                </div>
-            )}
+            <FollowsPreview user={user} defaultAvatar={defaultAvatar} />
         </div>
     );
 };
