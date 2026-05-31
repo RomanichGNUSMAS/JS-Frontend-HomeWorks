@@ -21,35 +21,13 @@ export const ConfirmModal: React.FC<{
         const formData = new FormData();
         formData.append('profile-pic', file);
 
-        let localUrl: string | null = null;
-        try {
-            localUrl = URL.createObjectURL(file);
-            setAvatar(localUrl);
-        } catch (e) {
-        }
-
-        Axios.patch('/account/avatar', formData)
+        Axios.patch<{ picture:string }>('/account/avatar', formData)
             .then((res) => {
-                const serverUrl = res?.data?.avatar || res?.data?.avatarUrl || res?.data?.url || null;
-                if (serverUrl) {
-                    setAvatar(serverUrl);
-                    return;
-                }
-
-                return Axios.get('/account').then((r) => {
-                    const fetched = r?.data?.user?.avatar || r?.data?.avatar || null;
-                    if (fetched) setAvatar(fetched);
-                }).catch(() => {
-                });
+                console.log(res.data.picture)
+                setAvatar(res.data.picture)
             })
             .catch((err) => console.log(err.message))
             .finally(() => {
-                if (localUrl) {
-                    try {
-                        URL.revokeObjectURL(localUrl);
-                    } catch (e) {
-                    }
-                }
                 handleClose();
             });
     };
