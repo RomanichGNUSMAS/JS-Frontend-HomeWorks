@@ -2,7 +2,7 @@ import React from "react";
 import type { WholeRequest } from "../../../config/types/types";
 import { useAuth } from "../../../hooks/useAuth";
 import { Link } from "react-router-dom";
-import { Like } from "./Like";
+import { Like } from "./Reactions/Like";
 
 export const ShowPosts:React.FC<{ data:WholeRequest}> = ({ data }) => {
     const [me,setMe] = React.useState<WholeRequest | null>(null);
@@ -13,7 +13,7 @@ export const ShowPosts:React.FC<{ data:WholeRequest}> = ({ data }) => {
         <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-slate-950/90 p-6 shadow-2xl shadow-black/30">
                 <h2 className="text-xl font-semibold text-slate-100">Posts</h2>
 
-                {data.user.isAccountPrivate && !data.followsMe && !data.followStatus ? (
+                {me.user.id !== data.user.id && data.user.isAccountPrivate && !data.followsMe && !data.followStatus ? (
                     <div className="mt-6 rounded-3xl bg-white/5 p-6 text-slate-300">
                         <p className="text-base text-slate-200">This account is private.</p>
                         <p className="mt-2 text-sm text-slate-400">Follow them to see their posts.</p>

@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom"
 import type { Post } from "../../config/types/types";
 import { Axios } from "../../config/Axios";
-import { Comment } from "../profile/components/Comment";
+import { Comment } from "../profile/components/Reactions/Comment";
 
 export const OnePost: React.FC = () => {
     const { id } = useParams();

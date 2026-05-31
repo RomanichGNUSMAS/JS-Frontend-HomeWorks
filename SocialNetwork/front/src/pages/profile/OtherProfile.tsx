@@ -5,6 +5,7 @@ import type { Account, WholeRequest } from "../../config/types/types";
 import { useGetRequest } from "../../hooks/useGetRequest";
 import { useAuth } from "../../hooks/useAuth";
 import { ShowPosts } from "./components/showPosts";
+import { isAxiosError } from "axios";
 
 
 type FollowRequest = {
@@ -56,15 +57,21 @@ export const OtherProfile: React.FC = () => {
     }
 
     const handleAcceptRequest = (e: React.FormEvent) => {
-        if (!incomingRequest) return;
+        if (!incomingRequest || !e.isTrusted) return;
         e.preventDefault();
+        e.stopPropagation();
         const temp = incomingRequest;
         setIncomingRequest(null);
         Axios.patch(`/follow/requests/accept/${incomingRequest.id}`)
             .then(() => {
                 refetch();
             })
-            .catch(() => setIncomingRequest(temp));
+            .catch(err => {
+                if(isAxiosError(err)) {
+                    return
+                }
+                setIncomingRequest(temp)
+            })
     }
 
     return me && data && (

@@ -37,3 +37,13 @@ export interface WholeRequest {
     requestSent: boolean,
     user: Account
 }
+
+export interface Comments {
+    comments: {
+        id: number,
+        text: string,
+        user: Account,
+        userid: number,
+        postid: number
+    }[]
+}

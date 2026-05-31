@@ -1,8 +1,8 @@
 import React from "react";
-import { useGetRequest } from "../../../hooks/useGetRequest";
-import type { WholeRequest } from "../../../config/types/types";
-import { useAuth } from "../../../hooks/useAuth";
-import { Axios } from "../../../config/Axios";
+import { useGetRequest } from "../../../../hooks/useGetRequest";
+import type { WholeRequest } from "../../../../config/types/types";
+import { useAuth } from "../../../../hooks/useAuth";
+import { Axios } from "../../../../config/Axios";
 
 interface LikeType {
     reactions: {
@@ -31,7 +31,7 @@ export const Like: React.FC<{ postid: number }> = ({ postid }) => {
             <button onClick={handleLike} className="group flex items-center gap-2 text-slate-400 transition-colors duration-200 hover:text-red-500">
                 <svg
                     xmlns="http://w3.org"
-                    fill={!!data.reactions.find(reaction => reaction.userId == me.user.id) ? "red" : "none"}
+                    fill={!!data?.reactions.find(reaction => reaction.userId == me.user.id) ? "red" : "none"}
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
@@ -43,7 +43,7 @@ export const Like: React.FC<{ postid: number }> = ({ postid }) => {
                         d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
                     />
                 </svg>
-                <span className="text-xs font-medium">{data.reactions.length}</span>
+                <span className="text-xs font-medium">{data?.reactions.length}</span>
             </button>
         </div>
     )
