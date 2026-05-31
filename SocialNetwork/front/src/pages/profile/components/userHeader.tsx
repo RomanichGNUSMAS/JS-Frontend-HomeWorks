@@ -30,7 +30,7 @@ export const UserHeader: React.FC<Props> = ({fullName,setChange,user,inputRef,av
                         <input onChange={e => setChange(true)} className="hidden" ref={inputRef} type="file" />
                         <img
                             onClick={e => inputRef.current?.click()}
-                            src={`http://localhost:4002/${avatar}` || `http://localhost:4002/${user.avatar}`}
+                            src={(avatar && `http://localhost:4002/${avatar}`) || (user.avatar && `http://localhost:4002/${user.avatar}`) || "https://img.icons8.com/fluent/1200/name.jpg"}
                             alt=""
                             className="h-28 w-28 shrink-0 rounded-2xl border-4 border-slate-950 object-cover shadow-xl shadow-black/40 ring-2 ring-violet-500/40 sm:h-32 sm:w-32"
                         />

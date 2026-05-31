@@ -6,6 +6,7 @@ import { UserDetails } from "./components/UserDetails";
 import { FollowsPreview } from "./components/FollowPreview";
 import { ConfirmModal } from "./components/confirmModal";
 import { UserHeader } from "./components/userHeader";
+import {  useOutletContext } from "react-router-dom";
 
 const defaultAvatar =
     "https://img.icons8.com/fluent/1200/name.jpg";
@@ -17,13 +18,7 @@ export const Profile: React.FC = () => {
     const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     const inputRef = React.useRef<HTMLInputElement | null>(null);
     const [isChanged, setChange] = React.useState(false);
-    const [avatar, setAvatar] = React.useState<string | undefined>(undefined);
-
-    React.useEffect(() => {
-        if (user?.avatar) {
-            setAvatar(user.avatar);
-        }
-    }, [user?.avatar]);
+    const { avatar,setAvatar } = useOutletContext<{ avatar:string,setAvatar:(attr:string) => void }>()
     useAuth(setUser);
 
 

@@ -25,7 +25,7 @@ export const MyPosts: React.FC = () => {
                     ...prevState.user,
                     posts: prevState.user.posts.filter((post) => post.id !== id)
                 }
-            };
+            } as WholeRequest;
         });
         
     } catch (err: any) {

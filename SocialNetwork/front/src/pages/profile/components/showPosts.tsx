@@ -1,7 +1,14 @@
 import React from "react";
 import type { WholeRequest } from "../../../config/types/types";
+import { useAuth } from "../../../hooks/useAuth";
+import { Link } from "react-router-dom";
+import { Like } from "./Like";
 
 export const ShowPosts:React.FC<{ data:WholeRequest}> = ({ data }) => {
+    const [me,setMe] = React.useState<WholeRequest | null>(null);
+    useAuth(setMe);
+
+    if(!me) return <p>Loading...</p>;
     return (
         <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-slate-950/90 p-6 shadow-2xl shadow-black/30">
                 <h2 className="text-xl font-semibold text-slate-100">Posts</h2>
@@ -20,6 +27,7 @@ export const ShowPosts:React.FC<{ data:WholeRequest}> = ({ data }) => {
                         ) : (
                             data.user.posts.map((post, index) => (
                                 <div key={post.id ?? index} className="w-60 rounded-3xl border border-white/10 bg-slate-900/80 p-5">
+                                    <Link to={`/posts/${post.id}`}>
                                     <img
                                         src={`http://localhost:4002/${post.postImage}`}
                                         alt={post.title}
@@ -30,6 +38,11 @@ export const ShowPosts:React.FC<{ data:WholeRequest}> = ({ data }) => {
                                         <p className="text-sm leading-6 text-slate-400">{post.description}</p>
                                         <p className="text-xs uppercase tracking-wide text-slate-500">{post.updatedAt}</p>
                                     </div>
+                                    </Link>
+                                    
+                                    {/* UI Лайка */}
+                                    <Like postid={post.id} />
+
                                 </div>
                             ))
                         )}
@@ -37,4 +50,4 @@ export const ShowPosts:React.FC<{ data:WholeRequest}> = ({ data }) => {
                 )}
             </div>
     )
-} 
+}

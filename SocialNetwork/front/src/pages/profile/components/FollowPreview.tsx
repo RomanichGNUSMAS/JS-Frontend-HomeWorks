@@ -1,5 +1,6 @@
 import React from "react";
 import type { Account } from "../../../config/types/types";
+import { Link } from "react-router-dom";
 
 type Props = {
     user: Account,
@@ -16,11 +17,11 @@ export const FollowsPreview: React.FC<Props> = ({ user,defaultAvatar }) => {
                                 Recent followers
                             </h3>
                             <ul className="mt-4 space-y-3">
-                                {user.followers.slice(0, 4).map((person: any) => (
-
-                                    <li key={person.id} className="flex items-center gap-3">
+                                {user.followers.slice(0, 4).map((person) => (
+                                    <Link key={person.sender.id} to={`/otherprofile/${person.sender.username}`}>
+                                    <li className="flex items-center gap-3">
                                         <img
-                                            src={person.sender.avatar || defaultAvatar}
+                                            src={(person.sender.avatar && `http://localhost:4002/${person.sender.avatar}`) || defaultAvatar}
                                             alt=""
                                             className="h-10 w-10 rounded-full object-cover ring-2 ring-violet-500/30"
                                         />
@@ -33,6 +34,7 @@ export const FollowsPreview: React.FC<Props> = ({ user,defaultAvatar }) => {
                                             </p>
                                         </div>
                                     </li>
+                                    </Link>
                                 ))}
                             </ul>
                         </div>
@@ -43,10 +45,11 @@ export const FollowsPreview: React.FC<Props> = ({ user,defaultAvatar }) => {
                                 Following
                             </h3>
                             <ul className="mt-4 space-y-3">
-                                {user.followings.slice(0, 4).map((person: any) => (
-                                    <li key={person.id} className="flex items-center gap-3">
+                                {user.followings.slice(0, 4).map((person) => (
+                                    <Link key={person.receiver.id}  to={`/otherprofile/${person.receiver.username}`}>
+                                    <li className="flex items-center gap-3">
                                         <img
-                                            src={person.receiver.avatar || defaultAvatar}
+                                            src={(person.receiver.avatar && `http://localhost:4002/${person.receiver.avatar}`) || defaultAvatar}
                                             alt=""
                                             className="h-10 w-10 rounded-full object-cover ring-2 ring-fuchsia-500/30"
                                         />
@@ -59,6 +62,7 @@ export const FollowsPreview: React.FC<Props> = ({ user,defaultAvatar }) => {
                                             </p>
                                         </div>
                                     </li>
+                                    </Link> 
                                 ))}
                             </ul>
                         </div>

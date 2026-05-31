@@ -4,6 +4,7 @@ import { Axios } from "../../config/Axios";
 import type { Account, WholeRequest } from "../../config/types/types";
 import { useGetRequest } from "../../hooks/useGetRequest";
 import { useAuth } from "../../hooks/useAuth";
+import { ShowPosts } from "./components/showPosts";
 
 
 type FollowRequest = {
@@ -13,8 +14,8 @@ type FollowRequest = {
 
 export const OtherProfile: React.FC = () => {
     const { username } = useParams();
-    const { loading,data,refetch } = useGetRequest<WholeRequest>(`/account/${username}`)
-    const [me,setMe] = React.useState<WholeRequest | null>(null);
+    const { loading, data, refetch } = useGetRequest<WholeRequest>(`/account/${username}`)
+    const [me, setMe] = React.useState<WholeRequest | null>(null);
     const [incomingRequest, setIncomingRequest] = React.useState<FollowRequest | null>(null);
     useAuth(setMe)
 
@@ -46,7 +47,7 @@ export const OtherProfile: React.FC = () => {
     }
 
     const handleFollow = () => {
-        if(!data) return;
+        if (!data) return;
         Axios.post(`/follow/${data.user.id}`)
             .then(() => {
                 refetch();
@@ -54,15 +55,16 @@ export const OtherProfile: React.FC = () => {
             .catch(err => console.error(err.message))
     }
 
-    const handleAcceptRequest = () => {
+    const handleAcceptRequest = (e: React.FormEvent) => {
         if (!incomingRequest) return;
-
+        e.preventDefault();
+        const temp = incomingRequest;
+        setIncomingRequest(null);
         Axios.patch(`/follow/requests/accept/${incomingRequest.id}`)
             .then(() => {
                 refetch();
-                setIncomingRequest(null);
             })
-            .catch(err => console.error(err.message));
+            .catch(() => setIncomingRequest(temp));
     }
 
     return me && data && (
@@ -85,18 +87,21 @@ export const OtherProfile: React.FC = () => {
                         <button onClick={handleAcceptRequest} className="inline-flex rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-400">
                             Accept Request
                         </button>
-                    ) : (
-                        <button onClick={handleFollow} className="inline-flex rounded-2xl bg-violet-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-400">
-                            {data.followStatus ?
-                                "Unfollow" :
-                                data.requestSent ?
-                                    "Cancel Request" :
-                                    data.followsMe ?
-                                        "Follow Back" :
-                                        "Follow"
-                            }
-                        </button>
-                    )}
+                    ) :
+                        me.user.id != data.user.id ? (
+                            <button onClick={handleFollow} className="inline-flex rounded-2xl bg-violet-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-400">
+                                {data.followStatus ?
+                                    "Unfollow" :
+                                    data.requestSent ?
+                                        "Cancel Request" :
+                                        data.followsMe ?
+                                            "Follow Back" :
+                                            "Follow"
+                                }
+                            </button>
+                        )
+                        : <p>YOU</p>
+                    }
                 </div>
 
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -111,7 +116,7 @@ export const OtherProfile: React.FC = () => {
                 </div>
             </div>
 
-            
+            <ShowPosts data={data} />
         </div>
     )
 }

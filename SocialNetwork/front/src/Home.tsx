@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
-import type { Account, WholeRequest } from "./config/types/types";
+import type { WholeRequest } from "./config/types/types";
 import { Header } from "./components/Header";
 import { NavItems } from "./components/navItems";
 import { NavMobileItems } from "./pages/profile/components/NavMobileItems";
@@ -38,7 +38,14 @@ const navItems = [
 
 export const Home: React.FC = () => {
     const [text,setText] = React.useState<string>('')
-    const [{user}, setUser] = React.useState<WholeRequest | { user: null } >({user : null});
+    const [{user}, setUser] = React.useState<WholeRequest | { user: null } >({user : null})
+    const [avatar, setAvatar] = React.useState<string | undefined>(undefined);
+
+    React.useEffect(() => {
+        if (user?.avatar) {
+            setAvatar(user.avatar);
+        }
+    }, [user?.avatar]);;
     useAuth(setUser)
 
     return user && (
@@ -76,7 +83,7 @@ export const Home: React.FC = () => {
                         <div className="mt-auto rounded-xl border border-white/10 bg-slate-900/60 p-3">
                             <div className="flex items-center gap-3">
                                 <img
-                                    src={`http://localhost:4002/${user.avatar}` || "https://img.icons8.com/fluent/1200/name.jpg" }
+                                    src={(avatar && `http://localhost:4002/${avatar}`) || "https://img.icons8.com/fluent/1200/name.jpg" }
                                     alt=""
                                     className="h-11 w-11 rounded-full object-cover ring-2 ring-violet-500/50"
                                 />
@@ -103,7 +110,7 @@ export const Home: React.FC = () => {
                     {/* page content */}
                     <main className="flex w-full flex-1 flex-col rounded-2xl border border-white/10 bg-white/[0.02] p-4 shadow-inner shadow-black/20 sm:p-6">
                         <div className="w-full min-h-full flex-1">
-                            <Outlet />
+                            <Outlet context={{avatar,setAvatar}}/>
                         </div>
                     </main>
                 </div>

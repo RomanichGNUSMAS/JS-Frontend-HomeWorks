@@ -1,8 +1,9 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import type { Account, Post } from "../../config/types/types";
+import type { Post, WholeRequest } from "../../config/types/types";
 import { Axios } from "../../config/Axios";
 import React from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 type a = Omit<Post, "id">;
 type Props = Omit<a, "authorId" | "tags" | "location">;
@@ -15,12 +16,18 @@ const iconClass = "pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -transl
 
 export const NewPost = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Props>();
-    const [user, setUser] = React.useState<Account | null>(null);
+    const { ref: imageRef, onChange: rhfOnChange, ...imageRegister } = register("postImage", {
+        required: "please select an image"
+    });
+    const navigate = useNavigate();
+    const [{ user }, setUser] = React.useState<WholeRequest | { user: null }>({ user: null });
     const [imagePreview, setImagePreview] = React.useState<string | null>(null);
+    const [error, setImageError] = React.useState('');
     const [imageFile, setImageFile] = React.useState<File | null>(null);
     useAuth(setUser);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        rhfOnChange(e)
         const file = e.target.files?.[0];
         if (file) {
             setImageFile(file);
@@ -33,24 +40,28 @@ export const NewPost = () => {
     };
 
     const handleCreate: SubmitHandler<Props> = (data) => {
-        if(!user || !imageFile) return;
-        
+        console.log(imageFile)
+        if (!user) return;
+        if (!imageFile) {
+            setImageError("please select an image");
+            return;
+        }
         const formData = new FormData();
         formData.append("image", imageFile);
         formData.append("title", data.title);
         formData.append("description", data.description);
-        formData.append("authorId", user.id);
+        formData.append("authorId", user.id.toString());
         formData.append("id", Date.now().toString());
         formData.append("tags", JSON.stringify(["any"]));
         formData.append("location", "Armenia");
-        
+
         Axios.post("/posts", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
         })
             .then(() => {
-                //success html
+                navigate('/posts')
             })
             .catch((err) => {
                 console.log(err.message);
@@ -114,6 +125,22 @@ export const NewPost = () => {
                                     {error.message}
                                 </li>
                             ))}
+                            {error && <li className="flex items-start gap-2 text-sm text-red-300">
+                                <svg
+                                    className="mt-0.5 h-4 w-4 shrink-0 text-red-400"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={1.5}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+                                    />
+                                </svg>
+                                {error}
+                            </li>}
                         </ul>
                     )}
 
@@ -145,10 +172,10 @@ export const NewPost = () => {
                                             id="postImage"
                                             type="file"
                                             accept="image/*"
-                                            required
                                             className="sr-only"
-                                            {...register("postImage", { required: "please select an image" })}
+                                            ref={imageRef}
                                             onChange={handleImageChange}
+                                            {...imageRegister}
                                         />
                                     </label>
                                 ) : (
@@ -167,10 +194,10 @@ export const NewPost = () => {
                                                 id="postImage"
                                                 type="file"
                                                 accept="image/*"
-                                                required
                                                 className="sr-only"
-                                                {...register("postImage", { required: "please select an image" })}
+                                                ref={imageRef}
                                                 onChange={handleImageChange}
+                                                {...imageRegister}
                                             />
                                         </label>
                                     </div>

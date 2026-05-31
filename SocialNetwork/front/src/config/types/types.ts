@@ -24,8 +24,8 @@ export interface Account extends RegisterUser {
     id:number,
     bio:string,
     isAccountPrivate:boolean,
-    followings:Account[],
-    followers:Account[],
+    followings: {receiver:Account}[],
+    followers:{sender:Account}[],
     followersCount:number,
     followingsCount:number,
     posts:Post[]

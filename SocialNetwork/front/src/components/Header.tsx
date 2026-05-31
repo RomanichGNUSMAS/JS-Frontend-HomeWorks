@@ -66,7 +66,7 @@ export const Header:React.FC<Props> = ({ user,text,setText}) => {
                                     New Post
                                 </Link>
                                 <img
-                                    src={user.avatar || "https://img.icons8.com/fluent/1200/name.jpg"}
+                                    src={(user.avatar && `http://localhost:4002/${user.avatar}`) || "https://img.icons8.com/fluent/1200/name.jpg"}
                                     alt=""
                                     className="h-9 w-9 rounded-full object-cover ring-2 ring-violet-500/40 lg:hidden"
                                 />

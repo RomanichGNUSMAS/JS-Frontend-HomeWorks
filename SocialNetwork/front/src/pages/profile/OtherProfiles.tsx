@@ -4,6 +4,7 @@ import { Axios } from "../../config/Axios";
 import type { Account, WholeRequest } from "../../config/types/types";
 import { useAuth } from "../../hooks/useAuth";
 
+
 export const OtherProfiles: React.FC = () => {
     const { text } = useParams();
     const [data, setData] = React.useState<Account[]>([])
@@ -34,7 +35,7 @@ export const OtherProfiles: React.FC = () => {
                 >
                     <div className="flex items-center gap-4">
                         <img
-                            src={user.avatar || "https://img.icons8.com/fluent/1200/name.jpg"}
+                            src={(user.avatar && `http://localhost:4002/${user.avatar}`) || "https://img.icons8.com/fluent/1200/name.jpg"}
                             alt={user.username}
                             className="h-20 w-20 rounded-3xl object-cover ring-2 ring-violet-500/50"
                         />
