@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { TBody } from "./(components)/TableBody";
 import { getAllUsers } from "./(helpers)/fileWorker";
 import { User } from "./(types)/types";
 import { Table } from "./(components)/Table";
