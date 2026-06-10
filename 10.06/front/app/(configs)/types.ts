@@ -7,5 +7,5 @@ export interface User {
 
 export interface Action {
     type:string,
-    payload: User[]
+    payload: User[] | number
 }

@@ -30,9 +30,9 @@ exports.UserService = class {
         const ifExists = prisma.user.findFirst({
             where : {id}
         })
-        const isEmailNotFound = prisma.user.findUnique({
-            where: { email }
-        })
+        const isEmailNotFound = rawData.email?.trim() ? prisma.user.findUnique({
+            where: { email:rawData.email }
+        }) : false;
         if(isEmailNotFound) throw new Error('cannot update user that mail is exist for another user')
         if(!ifExists) throw new Error('user not found');
         return UserRepository.updateUserFromTable(id,rawData);

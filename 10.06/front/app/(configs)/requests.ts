@@ -1,13 +1,15 @@
 import { User } from "./types";
 
 export const allUsers = async () => {
-    const result = await fetch('http://localhost:3000/users/all');
+    const result = await fetch('http://localhost:3001/users/all');
     return result.json();
 }
 
-export const addUser = async (userBody:User) => {
-    const result = await fetch('http://localhost:3000/users/add', {
+export const addUser = async (userBody:Omit<User,'id'>) => {
+    console.log(JSON.stringify(userBody))
+    const result = await fetch('http://localhost:3001/users/add', {
         method:"POST",
+        headers:{ 'Content-Type': 'application/json'},
         body: JSON.stringify(userBody)
     });
     const data = result.json();
@@ -15,7 +17,7 @@ export const addUser = async (userBody:User) => {
 }
 
 export const removeUser = async (id:number) => {
-    const result = await fetch(`http://localhost:3000/users/remove/${id}`, {
+    const result = await fetch(`http://localhost:3001/users/remove/${id}`, {
         method:"DELETE"
     })
     const data = result.json();
@@ -23,8 +25,12 @@ export const removeUser = async (id:number) => {
 }
 
 export const updateUser = async (id:number,userData:Partial<User>) => {
-    const result = await fetch(`http://localhost:3000/update/${id}`, {
+    const result = await fetch(`http://localhost:3001/users/update/${id}`, {
         method:"PUT",
+        headers:{ 'Content-Type': 'application/json'},
         body: JSON.stringify(userData)
     })
+
+    const data = result.json();
+    return data;
 }

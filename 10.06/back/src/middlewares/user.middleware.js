@@ -8,7 +8,7 @@ exports.UserMiddleware = class {
     }
 
     static checkId(req,res,next) {
-        const { id } = req.body;
+        const { id } = req.params;
         if(!id || isNaN(+id)) next({ message:"id not defined" });
         next();
     }

@@ -1,7 +1,7 @@
-import { allUsers } from "../(configs)/requests"
+import React from "react";
 import { TBody } from "./Tbody";
-
-export const Table = () => {
+import { AddUser } from "./AddUser";
+export const Table: React.FC<{ isClicked: boolean, setClick: (p:boolean) => void }> = ({ isClicked,setClick }) => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
             <div className="max-w-7xl mx-auto">
@@ -9,7 +9,7 @@ export const Table = () => {
                     <h1 className="text-4xl font-bold text-slate-900 mb-2">Users Management</h1>
                     <p className="text-slate-600">Manage and update user information</p>
                 </div>
-                
+
                 <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-slate-200">
                     <table className="w-full">
                         <thead>
@@ -21,7 +21,10 @@ export const Table = () => {
                                 <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>
                             </tr>
                         </thead>
-                        <TBody />
+                        <tbody>
+                            {isClicked && <AddUser setClick={setClick} />}
+                            <TBody />
+                        </tbody>
                     </table>
                 </div>
             </div>
