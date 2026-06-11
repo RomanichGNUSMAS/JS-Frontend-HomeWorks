@@ -10,7 +10,7 @@ export const reducer = (state: User[], Action: Action) => {
         case "UPDATE": {
             if (typeof Action.payload !== 'number') {
                 const updatedUser = Action.payload[0] as User
-                return [...state.filter(user => user.id != updatedUser.id)]
+                return [...state.filter(user => user.id != updatedUser.id),updatedUser]
             }
             return state;
         }

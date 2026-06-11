@@ -28,7 +28,7 @@ exports.UserController = class {
         try {
             const { id } = req.params;
             const result = await UserService.updateUser(+id,req.body)
-            res.sendStatus(201).json({ message:`id ${id}: user updated!`});
+            res.status(201).json({ message:`id ${id}: user updated!`});
         } catch (err) { next(err) };  
     }
 }

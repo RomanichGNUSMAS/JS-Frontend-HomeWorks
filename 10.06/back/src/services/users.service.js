@@ -26,15 +26,20 @@ exports.UserService = class {
         return UserRepository.getAll();
     }
 
-    static async updateUser(id,rawData) {
+    static async updateUser(id,rawData,currentEmail) {
         const ifExists = prisma.user.findFirst({
             where : {id}
         })
-        const isEmailNotFound = rawData.email?.trim() ? prisma.user.findUnique({
+        const isEmailNotFound = rawData.email?.trim() ? await prisma.user.findUnique({
             where: { email:rawData.email }
         }) : false;
+        if(isEmailNotFound && isEmailNotFound.email == currentEmail) throw new Error('cannot change same email')
         if(isEmailNotFound) throw new Error('cannot update user that mail is exist for another user')
         if(!ifExists) throw new Error('user not found');
-        return UserRepository.updateUserFromTable(id,rawData);
+        const cleanObj = {};
+        ['id','email','name','salary'].forEach(t => {
+            cleanObj[t] = rawData[t]
+        })
+        return UserRepository.updateUserFromTable(id,cleanObj);
     }
 }

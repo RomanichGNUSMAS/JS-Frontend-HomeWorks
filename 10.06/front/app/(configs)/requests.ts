@@ -24,11 +24,11 @@ export const removeUser = async (id:number) => {
     return data;
 }
 
-export const updateUser = async (id:number,userData:Partial<User>) => {
+export const updateUser = async (id:number,userData:Partial<User>,email:string) => {
     const result = await fetch(`http://localhost:3001/users/update/${id}`, {
         method:"PUT",
         headers:{ 'Content-Type': 'application/json'},
-        body: JSON.stringify(userData)
+        body: JSON.stringify({...userData,currentEmail:email})
     })
 
     const data = result.json();
